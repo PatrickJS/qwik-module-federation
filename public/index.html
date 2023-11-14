@@ -1,0 +1,25 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qwik Module Federation</title>
+
+</head>
+<body>
+  <div id="app"></div>
+  
+  <script type="module">
+    // host container
+    const entry = await import('http://localhost:3000/assets/remoteEntry.js');
+    if (!window.__federation_shared__) window.__federation_shared__ = {};
+    const sharedScope = window.__federation_shared__;
+    entry.init(sharedScope);
+    const mod = await entry.get('.');
+    const main = mod();
+    // end
+
+    main.render(document.getElementById('app'));
+
+  </script>
+</body>
+</html>
