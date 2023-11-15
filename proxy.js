@@ -1,19 +1,40 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
-const port = 3001; // You can choose any port
+const port = 3001; // Your chosen port
+const proxyTarget = "http://localhost:3000"; // Proxy target
 
 // Serve static files from the 'dist' directory
-app.use(express.static(path.join(__dirname, "dist")));
+app.use(express.static(path.join(__dirname, "dist"), { fallthrough: true }));
 
 // Rewrite rule
-app.get("/assets/q-:path", (req, res) => {
-  // Construct the new path
+app.get("/assets/q-:path", (req, res, next) => {
   const newPath = `/build/q-${req.params.path}`;
-  // Serve the file from the new path
-  res.sendFile(path.join(__dirname, "dist", newPath));
+  const fullPath = path.join(__dirname, "dist", newPath);
+
+  if (fs.existsSync(fullPath)) {
+    res.sendFile(fullPath);
+  } else {
+    next(); // Pass control to the next middleware
+  }
 });
+
+// Proxy middleware
+app.use(
+  createProxyMiddleware(
+    (pathname, req) => {
+      return !req.originalUrl.startsWith("/assets/q-"); // Condition for proxying
+    },
+    {
+      target: proxyTarget,
+      changeOrigin: true,
+      logLevel: "debug", // Optional logging
+    }
+  )
+);
 
 // Start the server
 app.listen(port, () => {

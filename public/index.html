@@ -8,6 +8,9 @@
     <div id="app"></div>
 
     <script type="module">
+      //----------------------------------------------------------
+      // Webpack Module Federation approach
+      //----------------------------------------------------------
       // host container
       const entry = await import("http://localhost:3001/assets/remoteEntry.js");
       if (!window.__federation_shared__) window.__federation_shared__ = {};
@@ -18,9 +21,23 @@
       // end
 
       const el = document.getElementById("app");
-      const app = await main.render(el, {qwikLoader: true});
-      window.MFE_app = app;
-      // MFE_app.cleanup();
+      const app = await main.render(el);
+      window.MFE_app = app; // MFE_app.cleanup();
+
+      //----------------------------------------------------------
+      // Qwik MFE approach
+      //----------------------------------------------------------
+      // const html = await fetch('http://localhost:3000/').then(res => res.text());
+      // el.innerHTML = html;
+      // const scripts = el.querySelectorAll('script');
+      // scripts.forEach(script => {
+      //   const newScript = document.createElement('script');
+      //   newScript.textContent = script.textContent;
+      //   script.getAttributeNames().forEach(attr => {
+      //     newScript.setAttribute(attr, script.getAttribute(attr));
+      //   });
+      //   script.replaceWith(newScript);
+      // });
     </script>
     <script id="qwikloader">
       (() => {
