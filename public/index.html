@@ -9,10 +9,6 @@
 
     <script type="module">
       // host container
-      // const html = await fetch("http://localhost:3000/").then((res) =>
-      //   res.text()
-      // );
-      // document.getElementById("app").innerHTML = html;
       const entry = await import("http://localhost:3001/assets/remoteEntry.js");
       if (!window.__federation_shared__) window.__federation_shared__ = {};
       const sharedScope = window.__federation_shared__;
@@ -21,7 +17,8 @@
       const main = mod();
       // end
 
-      const app = await main.render(document.getElementById("app"), {qwikLoader: true});
+      const el = document.getElementById("app");
+      const app = await main.render(el, {qwikLoader: true});
       window.MFE_app = app;
       // MFE_app.cleanup();
     </script>
