@@ -14,8 +14,6 @@ import { render as qwikRender, type RenderOptions } from "@builder.io/qwik";
 // import Root from "./root";
 import Root from "./routes/index";
 
-import "./global.css";
-
 // TODO: do at build-time
 import { getQwikLoaderScript } from "@builder.io/qwik/server";
 
