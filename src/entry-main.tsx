@@ -17,15 +17,21 @@ import Root from "./routes/index";
 // TODO: do at build-time
 import { getQwikLoaderScript } from "@builder.io/qwik/server";
 
+const NOOP_APP = { cleanup: () => {} };
+let APP = NOOP_APP;
 export async function render(el = document.body, opts: RenderOptions) {
-  const scriptContent = getQwikLoaderScript();
-  const newScript = document.createElement("script");
-  newScript.textContent = scriptContent;
-  el.insertAdjacentElement("afterend", newScript);
+  if (!(opts as any).qwikLoader) {
+    const scriptContent = getQwikLoaderScript();
+    const newScript = document.createElement("script");
+    newScript.textContent = scriptContent;
+    el.insertAdjacentElement("afterend", newScript);
+  }
 
-  return qwikRender(el, <Root />, opts);
+  APP = await qwikRender(el, <Root />, opts);
+  return APP;
 }
 
 export function destroy() {
-  console.log("destroy");
+  APP.cleanup();
+  APP = NOOP_APP;
 }
