@@ -16,7 +16,15 @@ import Root from "./routes/index";
 
 import "./global.css";
 
-export function render(el = document.body, opts: RenderOptions) {
+// TODO: do at build-time
+import { getQwikLoaderScript } from "@builder.io/qwik/server";
+
+export async function render(el = document.body, opts: RenderOptions) {
+  const scriptContent = getQwikLoaderScript();
+  const newScript = document.createElement("script");
+  newScript.textContent = scriptContent;
+  el.insertAdjacentElement("afterend", newScript);
+
   return qwikRender(el, <Root />, opts);
 }
 
